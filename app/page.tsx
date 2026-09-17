@@ -1,3 +1,3 @@
 export default function Home() {
-  return <></>;
+  return <p>Source Serif 4 font</p>;
 }
