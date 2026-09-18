@@ -1,3 +1,10 @@
+"use client";
+import LaptopScene from "./components/landing-page/LaptopScene";
+
 export default function Home() {
-  return <p>Source Serif 4 font</p>;
+  return (
+    <div className="border-red-500 border-2 size-full">
+      <LaptopScene />
+    </div>
+  );
 }
