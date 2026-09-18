@@ -5,6 +5,12 @@ import createDirectionalLight from "@/app/functions/three-js/lightning/createDir
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import loadLaptopModel from "./loadLaptopModel";
+import {
+  EffectComposer,
+  OutputPass,
+  RenderPass,
+  SMAAPass,
+} from "three/examples/jsm/Addons.js";
 
 const LaptopScene = () => {
   let animationID: number;
@@ -22,7 +28,7 @@ const LaptopScene = () => {
       60,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000,
+      100,
     );
     camera.position.y = 3;
     camera.position.z = 5;
@@ -32,8 +38,14 @@ const LaptopScene = () => {
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 3));
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new SMAAPass());
+    composer.addPass(new OutputPass());
 
     // Load Laptop Model
     loadLaptopModel(scene);
@@ -48,7 +60,7 @@ const LaptopScene = () => {
     );
 
     // Animate each Frame
-    animationID = animateRender(scene, camera, renderer);
+    animationID = animateRender(composer);
 
     // Resize renderer when window is resized
     window.addEventListener("resize", () => handleResize(camera, renderer));
@@ -56,6 +68,7 @@ const LaptopScene = () => {
     // Cleanup function on re-render
     return () => {
       cancelAnimationFrame(animationID);
+      composer.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       window.removeEventListener("resize", () =>

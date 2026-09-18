@@ -1,22 +1,14 @@
-import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { EffectComposer } from "three/examples/jsm/Addons.js";
 
 /**
  * Handles the Three.JS animation on each frame.
  *
- * @param scene the scene the render
- * @param camera the camera linked to the given scene
- * @param renderer the renderer of the given scene
+ * @param composer the composer of the scene
  * @returns
  */
-const animateRender = (
-  scene: Scene,
-  camera: PerspectiveCamera,
-  renderer: WebGLRenderer,
-) => {
-  const animationID = requestAnimationFrame(() =>
-    animateRender(scene, camera, renderer),
-  );
-  renderer.render(scene, camera);
+const animateRender = (composer: EffectComposer) => {
+  const animationID = requestAnimationFrame(() => animateRender(composer));
+  composer.render();
 
   return animationID;
 };
