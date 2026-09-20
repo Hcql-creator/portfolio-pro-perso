@@ -54,6 +54,11 @@ class LaptopAnimationManager {
   static #animationStatus: AnimationState = AnimationState.unzooming;
 
   /**
+   * The progress percentage (0 - 1) of the current animation state.
+   */
+  static #stateProgress: number = 0.0;
+
+  /**
    * Getter for the scene containing the laptop.
    *
    * @returns the Scene object containing the laptop
@@ -99,8 +104,26 @@ class LaptopAnimationManager {
     LaptopAnimationManager.#camera = camera;
   }
 
+  static #computeStateProgress() {
+    // Compute animation progress
+    let progress =
+      1 -
+      (ScrollManager.getTarget() - ScrollManager.getScroll()) /
+        (AnimationRange[LaptopAnimationManager.#animationStatus][1] -
+          AnimationRange[LaptopAnimationManager.#animationStatus][0]);
+
+    // Bound this value between 0 - 1 range
+    progress = Math.max(0, progress);
+    progress = Math.min(1, progress);
+
+    LaptopAnimationManager.#stateProgress = progress;
+  }
+
   static performAnimation() {
     this.updateAnimationStatus();
+
+    // Compute animation progress
+    this.#computeStateProgress();
 
     // Perform the animation corresponding do the animation status
     switch (LaptopAnimationManager.#animationStatus) {
@@ -151,19 +174,9 @@ class LaptopAnimationManager {
    * Performs the next movement of the unzooming animation.
    */
   static #performUnzoomingAnimation() {
-    // Compute animatino progress
-    let progress =
-      1 -
-      (ScrollManager.getTarget() - ScrollManager.getScroll()) /
-        (AnimationRange[AnimationState.unzooming][1] -
-          AnimationRange[AnimationState.unzooming][0]);
-
-    // Bound this value between 0 - 1 range
-    progress = Math.max(0, progress);
-    progress = Math.min(1, progress);
-
     // Apply the camera movement
-    this.#camera.position.y = this.minimumYCameraPosition + progress * 2;
+    this.#camera.position.y =
+      this.minimumYCameraPosition + this.#stateProgress * 2;
   }
 
   /**
@@ -176,7 +189,8 @@ class LaptopAnimationManager {
       this.#laptopLid = this.#scene.getObjectByName("_top");
       return;
     }
-    this.#laptopLid.rotation.x = MathUtils.degToRad(0);
+    this.#laptopLid.rotation.x =
+      MathUtils.degToRad(90) - MathUtils.degToRad(90 * this.#stateProgress);
   }
 
   /**
