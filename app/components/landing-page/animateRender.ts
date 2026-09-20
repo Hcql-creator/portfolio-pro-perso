@@ -1,4 +1,4 @@
-import ScrollManager from "@/app/managers/ScrollManager";
+import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationManager";
 import { PerspectiveCamera } from "three";
 import { EffectComposer } from "three/examples/jsm/Addons.js";
 
@@ -11,16 +11,7 @@ import { EffectComposer } from "three/examples/jsm/Addons.js";
  */
 const animateRender = (composer: EffectComposer, camera: PerspectiveCamera) => {
   // --- Manage animations ---
-
-  // Update Scrolling
-  let scrollDelta =
-    (ScrollManager.getTarget() - ScrollManager.getScroll()) * 0.2;
-
-  scrollDelta = Math.round(scrollDelta * 100) / 100;
-  ScrollManager.updateScroll(ScrollManager.getScroll() + scrollDelta);
-
-  // Zooming
-  camera.position.y = ScrollManager.getScroll();
+  LaptopAnimationManager.performAnimation();
 
   // Complete the re-render
   const animationID = requestAnimationFrame(() =>

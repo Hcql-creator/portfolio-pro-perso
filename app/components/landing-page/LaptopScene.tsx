@@ -1,4 +1,4 @@
-import animateRender from "@/app/functions/three-js/animateRender";
+import animateRender from "@/app/components/landing-page/animateRender";
 import createVector from "@/app/functions/three-js/createVector";
 import handleResize from "@/app/functions/three-js/handleResize";
 import createDirectionalLight from "@/app/functions/three-js/lightning/createDirectionalLight";
@@ -12,6 +12,7 @@ import {
   SMAAPass,
 } from "three/examples/jsm/Addons.js";
 import ScrollManager from "@/app/managers/ScrollManager";
+import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationManager";
 
 const LaptopScene = () => {
   let animationID: number;
@@ -23,6 +24,7 @@ const LaptopScene = () => {
     // Initialize Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf5f2ea);
+    LaptopAnimationManager.setScene(scene);
 
     // Initialize Camera
     const camera = new THREE.PerspectiveCamera(
@@ -31,8 +33,9 @@ const LaptopScene = () => {
       0.1,
       100,
     );
-    camera.position.y = 2.65;
+    camera.position.y = ScrollManager.minimumScrollValue;
     camera.lookAt(0, 0, 0);
+    LaptopAnimationManager.setCamera(camera);
 
     // Initialize Renderer
     const renderer = new THREE.WebGLRenderer({
@@ -48,7 +51,7 @@ const LaptopScene = () => {
     composer.addPass(new OutputPass());
 
     // Load Laptop Model
-    loadLaptopModel(scene);
+    loadLaptopModel();
 
     // Main light
     createDirectionalLight(

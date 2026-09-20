@@ -1,13 +1,18 @@
 class ScrollManager {
   /**
+   * The minimum value of the current and target scroll.
+   */
+  static minimumScrollValue = 2.65;
+
+  /**
    * The current scroll value.
    */
-  static #currentScroll: number = 0;
+  static #currentScroll: number = this.minimumScrollValue;
 
   /**
    * The target scroll value.
    */
-  static #targetScroll: number = 0;
+  static #targetScroll: number = this.minimumScrollValue;
 
   /**
    * Private constructor for ScrollManager (as it's only used in a static context)
@@ -38,8 +43,8 @@ class ScrollManager {
    * @param newValue the new value to set (if valid) as scroll value
    */
   static updateScroll(newValue: number) {
-    if (newValue < 0) {
-      ScrollManager.#currentScroll = 0;
+    if (newValue < this.minimumScrollValue) {
+      ScrollManager.#currentScroll = this.minimumScrollValue;
     } else {
       ScrollManager.#currentScroll = newValue;
     }
@@ -51,8 +56,8 @@ class ScrollManager {
    * @param newValue the new value to set (if valid) as scroll value
    */
   static updateTarget(newValue: number) {
-    if (newValue < 0) {
-      ScrollManager.#targetScroll = 0;
+    if (newValue < this.minimumScrollValue) {
+      ScrollManager.#targetScroll = this.minimumScrollValue;
     } else {
       ScrollManager.#targetScroll = newValue;
     }
