@@ -11,6 +11,7 @@ import {
   RenderPass,
   SMAAPass,
 } from "three/examples/jsm/Addons.js";
+import ScrollManager from "@/app/managers/ScrollManager";
 
 const LaptopScene = () => {
   let animationID: number;
@@ -30,8 +31,7 @@ const LaptopScene = () => {
       0.1,
       100,
     );
-    camera.position.y = 3;
-    camera.position.z = 5;
+    camera.position.y = 2.65;
     camera.lookAt(0, 0, 0);
 
     // Initialize Renderer
@@ -54,16 +54,21 @@ const LaptopScene = () => {
     createDirectionalLight(
       scene,
       0xffffff,
-      15,
-      createVector(20, 20, 3),
+      5,
+      createVector(40, 20, 3),
       createVector(0, 0, 0),
     );
 
-    // Animate each Frame
+    // Animate each Frame and update based on scrolling
     animationID = animateRender(composer);
 
     // Resize renderer when window is resized
     window.addEventListener("resize", () => handleResize(camera, renderer));
+
+    // Animate on scroll
+    window.addEventListener("wheel", (e) => {
+      ScrollManager.updateTarget(ScrollManager.getTarget() + e.deltaY);
+    });
 
     // Cleanup function on re-render
     return () => {
