@@ -60,14 +60,14 @@ const LaptopScene = () => {
     );
 
     // Animate each Frame and update based on scrolling
-    animationID = animateRender(composer);
+    animationID = animateRender(composer, camera);
 
     // Resize renderer when window is resized
     window.addEventListener("resize", () => handleResize(camera, renderer));
 
     // Animate on scroll
     window.addEventListener("wheel", (e) => {
-      ScrollManager.updateTarget(ScrollManager.getTarget() + e.deltaY);
+      ScrollManager.updateTarget(ScrollManager.getTarget() + e.deltaY / 100);
     });
 
     // Cleanup function on re-render
