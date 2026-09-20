@@ -13,9 +13,10 @@ import {
 } from "three/examples/jsm/Addons.js";
 import ScrollManager from "@/app/managers/ScrollManager";
 import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationManager";
+import handleWheel from "./handleWheel";
 
 const LaptopScene = () => {
-  let animationID: number;
+  let stopAnimation: () => void | undefined;
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ const LaptopScene = () => {
       0.1,
       100,
     );
-    camera.position.y = ScrollManager.minimumScrollValue;
+    camera.position.y = LaptopAnimationManager.minimumYCameraPosition;
     camera.lookAt(0, 0, 0);
     LaptopAnimationManager.setCamera(camera);
 
@@ -51,7 +52,7 @@ const LaptopScene = () => {
     composer.addPass(new OutputPass());
 
     // Load Laptop Model
-    loadLaptopModel();
+    loadLaptopModel(scene);
 
     // Main light
     createDirectionalLight(
@@ -62,26 +63,25 @@ const LaptopScene = () => {
       createVector(0, 0, 0),
     );
 
-    // Animate each Frame and update based on scrolling
-    animationID = animateRender(composer, camera);
+    // Render at each frame
+    stopAnimation = animateRender(composer);
 
     // Resize renderer when window is resized
-    window.addEventListener("resize", () => handleResize(camera, renderer));
+    const callHandleResize = () => handleResize(camera, renderer);
+    window.addEventListener("resize", callHandleResize);
 
     // Animate on scroll
-    window.addEventListener("wheel", (e) => {
-      ScrollManager.updateTarget(ScrollManager.getTarget() + e.deltaY / 100);
-    });
+    window.addEventListener("wheel", handleWheel);
 
     // Cleanup function on re-render
     return () => {
-      cancelAnimationFrame(animationID);
+      scene.clear();
+      stopAnimation?.();
       composer.dispose();
       renderer.dispose();
       renderer.domElement.remove();
-      window.removeEventListener("resize", () =>
-        handleResize(camera, renderer),
-      );
+      window.removeEventListener("resize", callHandleResize);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, []);
   return <div ref={containerRef}></div>;

@@ -4,8 +4,10 @@ import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationM
 
 /**
  * Loads the laptop model from the '/models/laptop-3d-model.glb' path and adds it to the given scene.
+ *
+ * @param scene the scene we want the 3d laptop model to be added to
  */
-const loadLaptopModel = async () => {
+const loadLaptopModel = async (scene: THREE.Scene) => {
   try {
     const loader = new GLTFLoader();
 
@@ -31,7 +33,7 @@ const loadLaptopModel = async () => {
     const center = box.getCenter(new THREE.Vector3());
     laptop.position.sub(center);
 
-    LaptopAnimationManager.getScene().add(laptop);
+    scene.add(laptop);
   } catch (e) {
     console.error("An error occured while loading the laptop model:", e);
   }
