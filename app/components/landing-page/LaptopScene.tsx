@@ -2,18 +2,17 @@ import animateRender from "@/app/components/landing-page/animateRender";
 import createVector from "@/app/functions/three-js/createVector";
 import handleResize from "@/app/functions/three-js/handleResize";
 import createDirectionalLight from "@/app/functions/three-js/lightning/createDirectionalLight";
+import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationManager";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import loadLaptopModel from "./loadLaptopModel";
 import {
   EffectComposer,
   OutputPass,
   RenderPass,
   SMAAPass,
 } from "three/examples/jsm/Addons.js";
-import ScrollManager from "@/app/managers/ScrollManager";
-import LaptopAnimationManager from "@/app/managers/landing-page/LaptopAnimationManager";
 import handleWheel from "./handleWheel";
+import loadLaptopModel from "./loadLaptopModel";
 
 const LaptopScene = () => {
   let stopAnimation: () => void | undefined;

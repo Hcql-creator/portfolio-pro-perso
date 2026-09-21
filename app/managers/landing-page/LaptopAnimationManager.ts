@@ -6,6 +6,7 @@ import {
   Scene,
 } from "three";
 import ScrollManager from "../ScrollManager";
+import createVector from "@/app/functions/three-js/createVector";
 
 /**
  * Enumeration to list all animation status states available.
@@ -24,7 +25,7 @@ const AnimationRange = {
   [AnimationState.unzooming]: [0.0, 0.25],
   [AnimationState.idling]: [0.26, 0.35],
   [AnimationState.opening]: [0.36, 0.75],
-  [AnimationState.zooming]: [0.76, 1],
+  [AnimationState.zooming]: [0.76, 0.85],
 };
 
 class LaptopAnimationManager {
@@ -167,6 +168,9 @@ class LaptopAnimationManager {
         this.#animationStatus = AnimationState.zooming;
         ScrollManager.updateTarget(AnimationRange[AnimationState.zooming][1]);
         break;
+      default:
+        this.#animationStatus = AnimationState.idling;
+        break;
     }
   }
 
@@ -190,7 +194,14 @@ class LaptopAnimationManager {
       return;
     }
     this.#laptopLid.rotation.x =
-      MathUtils.degToRad(90) - MathUtils.degToRad(90 * this.#stateProgress);
+      MathUtils.degToRad(90) - MathUtils.degToRad(115 * this.#stateProgress);
+
+    this.#camera.position.z = 6 * this.#stateProgress;
+
+    // Camera LookAt
+    console.log(this.#stateProgress);
+    const cameraLookat = createVector(0, 0, -6 * this.#stateProgress);
+    this.#camera.lookAt(cameraLookat);
   }
 
   /**
